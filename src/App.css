@@ -1,0 +1,19 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.imgContainer {
+  width: 800px;
+  height: 450px;
+  overflow: hidden;
+  margin: 0 auto;
+  border-radius: 0.2rem;
+}
+
+.imgContainer img {
+  max-width: 100%;
+  height: auto;
+}

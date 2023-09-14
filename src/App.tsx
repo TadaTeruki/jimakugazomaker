@@ -8,6 +8,7 @@ function createCaptionedImage(
   caption01Y: number,
   koreanCaption01XY: [number, number],
   imageSrc: string,
+  imagePostionProp: number,
 ): Promise<HTMLImageElement> {
   const image = new Image();
   image.src = imageSrc;
@@ -25,13 +26,13 @@ function createCaptionedImage(
       if (imageAspect > canvasAspect) {
         drawWidth = canvas.height * imageAspect;
         drawHeight = canvas.height;
-        offsetX = 0;
+        offsetX = (canvas.width - drawWidth) * imagePostionProp;
         offsetY = (canvas.height - drawHeight) / 2;
       } else {
         drawWidth = canvas.width;
         drawHeight = canvas.width / imageAspect;
         offsetX = (canvas.width - drawWidth) / 2;
-        offsetY = 0;
+        offsetY = (canvas.height - drawHeight) * imagePostionProp;
       }
 
       ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
@@ -113,6 +114,10 @@ function App() {
   const [koreanCaption01XY, setKoreanCaption01XY] = useState<[number, number]>([
     0.25, 0.85,
   ]);
+  const [imagePostionProp, setImagePostionProp] = useState(0.5);
+  const [imagePostionPropText, setImagePostionPropText] = useState(
+    imagePostionProp.toString(),
+  );
   const [koreanCaption01XYText, setKoreanCaption01XYText] = useState<
     [string, string]
   >([koreanCaption01XY[0].toString(), koreanCaption01XY[1].toString()]);
@@ -125,6 +130,7 @@ function App() {
       caption01Y,
       koreanCaption01XY,
       imageSrc,
+      imagePostionProp,
     ).then((img) => {
       setImage(img);
     });
@@ -139,6 +145,7 @@ function App() {
     caption01Y,
     koreanCaption01XY,
     imageSrc,
+    imagePostionProp,
   ]);
 
   return (
@@ -163,6 +170,17 @@ function App() {
                 setImageSrc(reader.result as string);
               };
               reader.readAsDataURL(file);
+            }}
+          />
+          <br />
+          画像の位置(0.0-1.0)
+          <input
+            type="text"
+            value={imagePostionPropText}
+            onChange={(e) => {
+              setImagePostionPropText(e.target.value);
+              if (e.target.value === "") return;
+              setImagePostionProp(parseFloat(e.target.value));
             }}
           />
         </div>
@@ -220,6 +238,7 @@ function App() {
                 koreanCaption01XYText[0],
                 e.target.value,
               ]);
+              if (e.target.value === "") return;
               setKoreanCaption01XY([
                 koreanCaption01XY[0],
                 parseFloat(e.target.value),
@@ -236,6 +255,7 @@ function App() {
                 e.target.value,
                 koreanCaption01XYText[1],
               ]);
+              if (e.target.value === "") return;
               setKoreanCaption01XY([
                 parseFloat(e.target.value),
                 koreanCaption01XY[1],

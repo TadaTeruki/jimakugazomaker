@@ -39,3 +39,13 @@ body {
 .form {
   padding: 1rem;
 }
+
+.source {
+  margin: 1rem;
+  color: #333;
+  font-size: small;
+}
+
+.source a {
+  color: #555;
+}

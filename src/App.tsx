@@ -163,7 +163,7 @@ function App() {
       </div>
       <div className="forms">
         <div className="form">
-          画像
+          画像を選択
           <br />
           <input
             type="file"
@@ -178,7 +178,7 @@ function App() {
             }}
           />
           <br />
-          画像の位置(0.0-1.0)
+          画像の位置調整(0.0-1.0)
           <input
             type="text"
             value={imagePostionPropText}
@@ -279,6 +279,7 @@ function App() {
       >
         ダウンロード
       </button>
+      <div className="source">View Source: <a href="https://github.com/TadaTeruki/jimakugazomaker">github.com/TadaTeruki/jimakugazomaker</a></div>
     </div>
   );
 }

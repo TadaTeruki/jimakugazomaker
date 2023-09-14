@@ -96,6 +96,11 @@ function createCaptionedImage(
         );
       });
 
+      ctx.font = "bold 15px monoscape";
+      ctx.fillStyle = "#fffa";
+      ctx.textAlign = "right";
+      ctx.fillText("https://jimakugazomaker.peruki.dev", canvas.width - 5, 15);
+
       const img = new Image();
       img.src = canvas.toDataURL("image/jpeg");
       resolve(img);

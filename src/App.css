@@ -1,8 +1,18 @@
-#root {
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap");
+
+body {
+  background: url("./犬.jpg"), #eee;
+  background-blend-mode: overlay;
+  background-repeat: repeat;
+  background-size: 20%;
+}
+
+#mainContainer {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  font-family: "Noto Sans JP", sans-serif;
 }
 
 .imgContainer {
@@ -16,4 +26,16 @@
 .imgContainer img {
   max-width: 100%;
   height: auto;
+}
+
+.forms {
+  padding: 1rem;
+  font-weight: bold;
+  width: fit-content;
+  margin: auto;
+  text-align: left;
+}
+
+.form {
+  padding: 1rem;
 }

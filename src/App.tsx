@@ -4,6 +4,9 @@ import "./App.css";
 function createCaptionedImage(
   caption: string,
   koreanCatpion: string,
+  englishCaption: string,
+  caption01Y: number,
+  koreanCaption01XY: [number, number],
   imageSrc: string,
 ): Promise<HTMLImageElement> {
   const image = new Image();
@@ -34,31 +37,50 @@ function createCaptionedImage(
       ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
 
       const fontSize = 25;
+      const engFontSize = 15;
       const rectMargin = 10;
-      const textBaswHeight = canvas.height * 0.95;
+      const textBaseY = canvas.height * caption01Y;
+      const koreanTextBaseX = canvas.width * koreanCaption01XY[0];
+      const koreanTextBaseY = canvas.height * koreanCaption01XY[1];
 
-      ctx.font = fontSize.toString() + "px sans-serif";
+      const baseFont = fontSize.toString() + "px sans-serif";
+      const engFont = engFontSize.toString() + "px sans-serif";
       ctx.textAlign = "center";
 
       const cap = caption.split("\n");
 
       const kcap = koreanCatpion.split("\n");
       kcap.forEach((line, i) => {
+        ctx.font = "bold " + baseFont;
         ctx.fillStyle = "white";
-        ctx.fillText(
-          line,
-          canvas.width / 2,
-          textBaswHeight +
-            (fontSize + rectMargin * 2) * (i - cap.length / 2) -
-            rectMargin / 2 -20,
-        );
+        ctx.strokeStyle = "#555";
+        ctx.lineWidth = 3;
+        const x = koreanTextBaseX;
+        const y = koreanTextBaseY + fontSize * (i - cap.length / 2);
+        ctx.strokeText(line, x, y);
+        ctx.fillText(line, x, y);
       });
 
+      const ecap = englishCaption.split("\n");
+      ecap.forEach((line, i) => {
+        ctx.font = "bold " + engFont;
+        ctx.fillStyle = "white";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 5;
+        const x = koreanTextBaseX;
+        const y = koreanTextBaseY + engFontSize * (i - cap.length / 2);
+        ctx.strokeText(line, x, y);
+        ctx.fillText(line, x, y);
+        
+      });
+
+
       cap.forEach((line, i) => {
+        ctx.font = baseFont;
         ctx.fillStyle = "#000c";
         ctx.fillRect(
           canvas.width / 2 - ctx.measureText(line).width / 2 - rectMargin,
-          textBaswHeight +
+          textBaseY +
             (fontSize + rectMargin * 2) * (i - cap.length / 2) -
             fontSize -
             rectMargin,
@@ -69,7 +91,7 @@ function createCaptionedImage(
         ctx.fillText(
           line,
           canvas.width / 2,
-          textBaswHeight +
+          textBaseY +
             (fontSize + rectMargin * 2) * (i - cap.length / 2) -
             rectMargin / 2,
         );
@@ -83,68 +105,147 @@ function createCaptionedImage(
 }
 
 function App() {
-  const [caption, setCaption] = useState("私は眠いです");
+  const [caption, setCaption] = useState("私は眠いです~");
   const [koreanCatpion, setKoreanCaption] = useState("나는 졸려요...");
-  const [imageSrc, setImageSrc] = useState("./default.jpg");
+  const [englishCaption, setEnglishCaption] = useState("I'm sleepy...");
+  const [imageSrc, setImageSrc] = useState("./犬.jpg");
   const [image, setImage] = useState(new Image());
+  const [caption01Y, setCaption01Y] = useState(0.95);
+  const [caption01YText, setCaption01YText] = useState(caption01Y.toString());
+  const [koreanCaption01XY, setKoreanCaption01XY] = useState<[number, number]>([
+    0.25, 0.85,
+  ]);
+  const [koreanCaption01XYText, setKoreanCaption01XYText] = useState<[string, string]>(
+    [koreanCaption01XY[0].toString(), koreanCaption01XY[1].toString()]
+  );
 
   const fetchImage = () => {
-    createCaptionedImage(caption, koreanCatpion, imageSrc).then((img) => {
+    createCaptionedImage(
+      caption,
+      koreanCatpion,
+      englishCaption,
+      caption01Y,
+      koreanCaption01XY,
+      imageSrc,
+    ).then((img) => {
       setImage(img);
     });
   };
 
   useEffect(() => {
     fetchImage();
-  }, [caption, koreanCatpion, imageSrc]);
+  }, [caption, koreanCatpion, englishCaption, caption01Y, koreanCaption01XY, imageSrc]);
 
   return (
-    <>
+    <div id="mainContainer">
       <h1>😺 どうぶつ字幕画像メーカー</h1>
-      <p>
-        画像をアップロード:&nbsp;
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            const file = e.target.files![0];
-            const reader = new FileReader();
-            reader.onload = () => {
-              setImageSrc(reader.result as string);
-            };
-            reader.readAsDataURL(file);
-          }}
-        />
-      </p>
+      <p>元ネタが何とはいいませんが、ああいう感じの面白字幕画像を作れます</p>
+      <br />
       <div className="imgContainer">
         <img src={image.src} alt="uploaded" />
       </div>
-      <p>
-        日本語の字幕
-        <br />
-        <textarea
-          rows={3}
-          cols={50}
-          value={caption}
-          onChange={(e) => {
-            setCaption(e.target.value);
-          }}
-        />
-        <br />
-        <br />
-        韓国語の字幕
-        <br />
-        <textarea
-          rows={3}
-          cols={50}
-          value={koreanCatpion}
-          onChange={(e) => {
-            setKoreanCaption(e.target.value);
-          }}
-        />
-      </p>
-      <button onClick={() => {}}>ダウンロード</button>
-    </>
+      <div className="forms">
+        <div className="form">
+          画像
+          <br />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files![0];
+              const reader = new FileReader();
+              reader.onload = () => {
+                setImageSrc(reader.result as string);
+              };
+              reader.readAsDataURL(file);
+            }}
+          />
+        </div>
+        <div className="form">
+          日本語の字幕
+          <br />
+          <textarea
+            rows={3}
+            cols={50}
+            value={caption}
+            onChange={(e) => {
+              setCaption(e.target.value);
+            }}
+          />
+          <br />
+          縦の位置(0.0-1.0)
+          <input
+            type="text"
+            value={caption01YText}
+            onChange={(e) => {
+              setCaption01YText(e.target.value);
+              setCaption01Y(parseFloat(e.target.value));
+            }}
+          />
+        </div>
+        <div className="form">
+          韓国語の字幕
+          <br />
+          <textarea
+            rows={3}
+            cols={50}
+            value={koreanCatpion}
+            onChange={(e) => {
+              setKoreanCaption(e.target.value);
+            }}
+          />
+          <br />
+          英語の字幕
+          <br />
+          <textarea
+            rows={3}
+            cols={50}
+            value={englishCaption}
+            onChange={(e) => {
+              setEnglishCaption(e.target.value);
+            }}
+          />
+          <br />
+          縦の位置(0.0-1.0)
+          <input
+            type="text"
+            value={koreanCaption01XYText[1]}
+            onChange={(e) => {
+              setKoreanCaption01XYText(
+                [koreanCaption01XYText[0],
+                e.target.value],
+              );
+              setKoreanCaption01XY(
+                [koreanCaption01XY[0],
+                parseFloat(e.target.value)],
+              );
+            }}
+          />
+          <br />
+          横の位置(0.0-1.0)
+          <input
+            type="text"
+            value={koreanCaption01XYText[0]}
+            onChange={(e) => {
+              setKoreanCaption01XYText(
+                [e.target.value,
+                koreanCaption01XYText[1]],
+              );
+              setKoreanCaption01XY(
+                [parseFloat(e.target.value),
+                koreanCaption01XY[1]],
+              );
+            }}
+          />
+        </div>
+      </div>
+      <button onClick={() => {
+        const a = document.createElement("a");
+        a.href = image.src;
+        a.download = "captioned.jpg";
+        a.click();
+      }}>ダウンロード</button>
+    </div>
   );
 }
 

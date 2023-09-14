@@ -71,9 +71,7 @@ function createCaptionedImage(
         const y = koreanTextBaseY + engFontSize * (i - cap.length / 2);
         ctx.strokeText(line, x, y);
         ctx.fillText(line, x, y);
-        
       });
-
 
       cap.forEach((line, i) => {
         ctx.font = baseFont;
@@ -115,9 +113,9 @@ function App() {
   const [koreanCaption01XY, setKoreanCaption01XY] = useState<[number, number]>([
     0.25, 0.85,
   ]);
-  const [koreanCaption01XYText, setKoreanCaption01XYText] = useState<[string, string]>(
-    [koreanCaption01XY[0].toString(), koreanCaption01XY[1].toString()]
-  );
+  const [koreanCaption01XYText, setKoreanCaption01XYText] = useState<
+    [string, string]
+  >([koreanCaption01XY[0].toString(), koreanCaption01XY[1].toString()]);
 
   const fetchImage = () => {
     createCaptionedImage(
@@ -134,7 +132,14 @@ function App() {
 
   useEffect(() => {
     fetchImage();
-  }, [caption, koreanCatpion, englishCaption, caption01Y, koreanCaption01XY, imageSrc]);
+  }, [
+    caption,
+    koreanCatpion,
+    englishCaption,
+    caption01Y,
+    koreanCaption01XY,
+    imageSrc,
+  ]);
 
   return (
     <div id="mainContainer">
@@ -211,14 +216,14 @@ function App() {
             type="text"
             value={koreanCaption01XYText[1]}
             onChange={(e) => {
-              setKoreanCaption01XYText(
-                [koreanCaption01XYText[0],
-                e.target.value],
-              );
-              setKoreanCaption01XY(
-                [koreanCaption01XY[0],
-                parseFloat(e.target.value)],
-              );
+              setKoreanCaption01XYText([
+                koreanCaption01XYText[0],
+                e.target.value,
+              ]);
+              setKoreanCaption01XY([
+                koreanCaption01XY[0],
+                parseFloat(e.target.value),
+              ]);
             }}
           />
           <br />
@@ -227,24 +232,28 @@ function App() {
             type="text"
             value={koreanCaption01XYText[0]}
             onChange={(e) => {
-              setKoreanCaption01XYText(
-                [e.target.value,
-                koreanCaption01XYText[1]],
-              );
-              setKoreanCaption01XY(
-                [parseFloat(e.target.value),
-                koreanCaption01XY[1]],
-              );
+              setKoreanCaption01XYText([
+                e.target.value,
+                koreanCaption01XYText[1],
+              ]);
+              setKoreanCaption01XY([
+                parseFloat(e.target.value),
+                koreanCaption01XY[1],
+              ]);
             }}
           />
         </div>
       </div>
-      <button onClick={() => {
-        const a = document.createElement("a");
-        a.href = image.src;
-        a.download = "captioned.jpg";
-        a.click();
-      }}>ダウンロード</button>
+      <button
+        onClick={() => {
+          const a = document.createElement("a");
+          a.href = image.src;
+          a.download = "captioned.jpg";
+          a.click();
+        }}
+      >
+        ダウンロード
+      </button>
     </div>
   );
 }
